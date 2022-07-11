@@ -1,0 +1,15 @@
+
+databaseURL = "postgresql://localhost:5432/rds_provisioner"
+
+[logging]
+level = "debug"
+jsonLogs = false
+
+
+[aws]
+serviceConfigProfile = "personal"
+accountId = "283492314377"
+
+[backup]
+s3_bucket = "librodo-db-backups"
+
