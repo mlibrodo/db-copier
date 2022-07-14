@@ -43,28 +43,28 @@ func (in RestoreFromS3) Exec(pgConnInfo *conn.DBConnInfo) error {
 
 func createDB(pgConnInfo *conn.DBConnInfo) error {
 	createDB := pgcommands.NewCreateDB(pgConnInfo)
-	createDBExec := createDB.Exec()
+	result := createDB.Exec()
 
-	if createDBExec.Error != nil {
+	if result.Error != nil {
 		log.WithFields(
 			log.Fields{
-				"Command": createDBExec.FullCommand,
-				"Error":   createDBExec.Error.Err,
+				"Command": result.FullCommand,
+				"Error":   result.Error.Err,
 			},
 		).Error("CreateDB failed")
 
-		log.Error(createDBExec.Output)
+		log.Error(result.Output)
 
-		return createDBExec.Error.Err
+		return result.Error.Err
 
 	}
 	log.WithFields(
 		log.Fields{
-			"Command": createDBExec.FullCommand,
+			"Command": result.FullCommand,
 		},
 	).Debug("CreateDB success")
 
-	log.Debug(createDBExec.Output)
+	log.Debug(result.Output)
 
 	return nil
 }

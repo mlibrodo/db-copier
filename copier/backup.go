@@ -53,26 +53,26 @@ func backup(db *conn.DBConnInfo, name string) (*string, error) {
 	dump := pgcommands.NewPGDump(db, tempFile.Name())
 	dump.Verbose = true
 
-	dumpExec := dump.Exec()
+	result := dump.Exec()
 
-	if dumpExec.Error != nil {
+	if result.Error != nil {
 		log.WithFields(
 			log.Fields{
-				"Command": dumpExec.FullCommand,
-				"Error":   dumpExec.Error.Err,
+				"Command": result.FullCommand,
+				"Error":   result.Error.Err,
 			},
 		).Debug("Backup failed")
 
-		log.Error(dumpExec.Output)
+		log.Error(result.Output)
 
-		return nil, dumpExec.Error.Err
-
+		return nil, result.Error.Err
 	}
+
 	fullPath := tempFile.Name()
 
 	log.WithFields(
 		log.Fields{
-			"PGDump Flags": dumpExec.FullCommand,
+			"PGDump Flags": result.FullCommand,
 		},
 	).Debug("Backup success")
 
