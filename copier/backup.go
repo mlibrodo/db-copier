@@ -12,12 +12,10 @@ import (
 )
 
 type BackupToS3 struct {
-	DB *conn.DBConnInfo
 	S3 s3.S3Object
 }
 
-func (in BackupToS3) Exec() error {
-	db := in.DB
+func (in BackupToS3) Exec(db *conn.DBConnInfo) error {
 
 	backupFile, err := backup(db, in.S3.GetFileName())
 

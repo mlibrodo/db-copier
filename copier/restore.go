@@ -14,10 +14,19 @@ type RestoreFromS3 struct {
 }
 
 func (in RestoreFromS3) Exec(pgConnInfo *conn.DBConnInfo) error {
+	var err error
 	file, _ := os.CreateTemp(common.TEMP_DIR, "pg_dump-*.sql.tar.gz")
-	defer file.Close()
 
-	err := s3.Download(in.S3, file)
+	defer func(file *os.File) {
+		tmpErr := file.Close()
+
+		if err != nil {
+			err = tmpErr
+		}
+
+	}(file)
+
+	err = s3.Download(in.S3, file)
 
 	if err != nil {
 		return err

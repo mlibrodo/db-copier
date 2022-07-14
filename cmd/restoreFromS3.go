@@ -8,11 +8,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// backupCmd runs pgdump and stores the output to S3
-var backupCmd = &cobra.Command{
+// restoreCmd runs pg_restore using a file from S3
+var restoreCmd = &cobra.Command{
 
-	Use:   "backup",
-	Short: "Backup a DB to S3 bucket with the given s3 key",
+	Use:   "restore",
+	Short: "Restore a DB from an S3 bucket with the given s3 key",
 	Run: func(cmd *cobra.Command, args []string) {
 		var err error
 
@@ -23,22 +23,20 @@ var backupCmd = &cobra.Command{
 		var dbPassword string
 		var s3Key string
 
-		parentFlags := cmd.Parent().PersistentFlags()
 		flags := cmd.Flags()
-
-		if dbHost, err = parentFlags.GetString("dbHost"); err != nil {
+		if dbHost, err = flags.GetString("dbHost"); err != nil {
 			panic("dbHost not set")
 		}
-		if dbPort, err = parentFlags.GetInt32("dbPort"); err != nil {
+		if dbPort, err = flags.GetInt32("dbPort"); err != nil {
 			panic("dbPort not set")
 		}
-		if dbName, err = parentFlags.GetString("dbName"); err != nil {
+		if dbName, err = flags.GetString("dbName"); err != nil {
 			panic("dbName not set")
 		}
-		if dbUser, err = parentFlags.GetString("dbUser"); err != nil {
+		if dbUser, err = flags.GetString("dbUser"); err != nil {
 			panic("dbUser not set")
 		}
-		if dbPassword, err = parentFlags.GetString("dbPassword"); err != nil {
+		if dbPassword, err = flags.GetString("dbPassword"); err != nil {
 			panic("dbPassword not set")
 		}
 		if s3Key, err = flags.GetString("s3Key"); err != nil {
@@ -53,20 +51,20 @@ var backupCmd = &cobra.Command{
 			Password: dbPassword,
 		}
 
-		backup := copier.BackupToS3{
+		restore := copier.RestoreFromS3{
 			S3: s3.S3Object{
 				Bucket: config.GetConfig().Backup.S3Bucket,
 				Key:    s3Key,
 			},
 		}
 
-		backup.Exec(connInfo)
+		restore.Exec(connInfo)
 	},
 }
 
 func init() {
 	var s3Key string
-	rootCmd.AddCommand(backupCmd)
 
-	backupCmd.Flags().StringVarP(&s3Key, "s3Key", "k", "", "")
+	rootCmd.AddCommand(restoreCmd)
+	restoreCmd.Flags().StringVarP(&s3Key, "s3Key", "k", "", "")
 }
