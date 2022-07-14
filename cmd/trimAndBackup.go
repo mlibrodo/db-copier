@@ -1,18 +1,20 @@
 package cmd
 
 import (
+	"fmt"
 	"github.com/mlibrodo/db-copier/aws/s3"
 	"github.com/mlibrodo/db-copier/config"
 	"github.com/mlibrodo/db-copier/copier"
 	"github.com/mlibrodo/db-copier/postgres/conn"
 	"github.com/spf13/cobra"
+	"path/filepath"
 )
 
-// backupCmd runs pgdump and stores the output to S3Backup
-var backupCmd = &cobra.Command{
+// trimAndBackupCmd trims a backup in S3 and then backs that up
+var trimAndBackupCmd = &cobra.Command{
 
-	Use:   "backup",
-	Short: "Backup a DB to S3Backup bucket with the given s3 key",
+	Use:   "trimAndBackup",
+	Short: "Takes an S3 backup, restores it, trims that and then backs that backup to S3. Uses the connection to restore the DB",
 	Run: func(cmd *cobra.Command, args []string) {
 		var err error
 
@@ -53,20 +55,39 @@ var backupCmd = &cobra.Command{
 			Password: dbPassword,
 		}
 
-		backup := copier.BackupToS3{
-			S3Backup: s3.S3Object{
+		restore := copier.RestoreFromS3{
+			S3: s3.S3Object{
 				Bucket: config.GetConfig().Backup.S3Bucket,
 				Key:    s3Key,
 			},
 		}
 
-		backup.Exec(connInfo)
+		path, file := filepath.Split(s3Key)
+		backup := copier.BackupToS3{
+			S3Backup: s3.S3Object{
+				Bucket: config.GetConfig().Backup.S3Bucket,
+				Key:    fmt.Sprintf("%strimmed-%s", path, file),
+			},
+		}
+		// Load from a json file
+		trim := copier.Trim{
+			[]copier.TrimDef{{"foo", "i > 3"}},
+		}
+
+		// Load from a json file
+		trimAndBackup := copier.TrimAndBackup{
+			RestoreFromS3: restore,
+			Trim:          trim,
+			TrimmedBackup: backup,
+			DropDB:        false,
+		}
+
+		trimAndBackup.Exec(connInfo)
 	},
 }
 
 func init() {
 	var s3Key string
-	rootCmd.AddCommand(backupCmd)
-
-	backupCmd.Flags().StringVarP(&s3Key, "s3Key", "k", "", "")
+	rootCmd.AddCommand(trimAndBackupCmd)
+	trimAndBackupCmd.Flags().StringVarP(&s3Key, "s3Key", "k", "", "")
 }

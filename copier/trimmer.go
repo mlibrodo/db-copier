@@ -18,11 +18,11 @@ func (in TrimDef) ToSQL() string {
 	return ds.Sql
 }
 
-type TrimDefList struct {
+type Trim struct {
 	TrimDefs []TrimDef
 }
 
-func (in TrimDefList) Exec(pgConnInfo *conn.DBConnInfo) error {
+func (in Trim) Exec(pgConnInfo *conn.DBConnInfo) error {
 
 	for _, d := range in.TrimDefs {
 		log.WithFields(log.Fields{

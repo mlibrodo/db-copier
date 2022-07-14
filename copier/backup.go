@@ -12,30 +12,30 @@ import (
 )
 
 type BackupToS3 struct {
-	S3 s3.S3Object
+	S3Backup s3.S3Object
 }
 
 func (in BackupToS3) Exec(db *conn.DBConnInfo) error {
 
-	backupFile, err := backup(db, in.S3.GetFileName())
+	backupFile, err := backup(db, in.S3Backup.GetFileName())
 
 	if err != nil {
 		return err
 	}
 
-	s3Object := in.S3
+	s3Object := in.S3Backup
 	if err = s3.Upload(s3Object, backupFile); err != nil {
 		return err
 	}
 
 	log.WithFields(
 		log.Fields{
-			"Host":        db.DBHost,
-			"Port":        db.DBPort,
-			"DB":          db.DBName,
-			"Backup File": backupFile,
-			"S3 Bucket":   s3Object.Bucket,
-			"S3 Key":      s3Object.Key,
+			"Host":            db.DBHost,
+			"Port":            db.DBPort,
+			"DB":              db.DBName,
+			"Backup File":     backupFile,
+			"S3Backup Bucket": s3Object.Bucket,
+			"S3Backup Key":    s3Object.Key,
 		},
 	).Debug("Backup success")
 

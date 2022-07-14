@@ -8,11 +8,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// restoreCmd runs pg_restore using a file from S3
+// restoreCmd runs pg_restore using a file from S3Backup
 var restoreCmd = &cobra.Command{
 
 	Use:   "restore",
-	Short: "Restore a DB from an S3 bucket with the given s3 key",
+	Short: "Restore a DB from an S3Backup bucket with the given s3 key",
 	Run: func(cmd *cobra.Command, args []string) {
 		var err error
 

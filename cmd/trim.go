@@ -46,8 +46,8 @@ var trimCmd = &cobra.Command{
 			Password: dbPassword,
 		}
 
-		// Load from a json?
-		trim := copier.TrimDefList{
+		// Load from a json file
+		trim := copier.Trim{
 			[]copier.TrimDef{{"foo", "i > 1"}},
 		}
 

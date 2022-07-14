@@ -9,7 +9,7 @@ import (
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Short: "Manages copying, restoring, trimming data in a postgres database and storing it in S3",
+	Short: "Manages copying, restoring, trimming data in a postgres database and storing it in S3Backup",
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.

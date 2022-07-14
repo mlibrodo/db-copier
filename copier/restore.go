@@ -26,19 +26,52 @@ func (in RestoreFromS3) Exec(pgConnInfo *conn.DBConnInfo) error {
 
 	}(file)
 
-	err = s3.Download(in.S3, file)
-
-	if err != nil {
+	if err = s3.Download(in.S3, file); err != nil {
 		return err
 	}
 
-	err = createDB(pgConnInfo)
+	// TODO check if we really want to delete the db
+	if err = dropDB(pgConnInfo); err != nil {
+		log.WithFields(
+			log.Fields{
+				"Database": pgConnInfo.DBName,
+			},
+		).Warning("Database does not exist, continuing to restore")
+	}
 
-	if err != nil {
+	if err = createDB(pgConnInfo); err != nil {
 		return err
 	}
 
 	return restoreFromFile(file, pgConnInfo)
+}
+
+func dropDB(pgConnInfo *conn.DBConnInfo) error {
+	dropDB := pgcommands.NewDropDB(pgConnInfo)
+	result := dropDB.Exec()
+
+	if result.Error != nil {
+		log.WithFields(
+			log.Fields{
+				"Command": result.FullCommand,
+				"Error":   result.Error.Err,
+			},
+		).Error("DropDB failed")
+
+		log.Error(result.Output)
+
+		return result.Error.Err
+
+	}
+	log.WithFields(
+		log.Fields{
+			"Command": result.FullCommand,
+		},
+	).Debug("DropDB success")
+
+	log.Debug(result.Output)
+
+	return nil
 }
 
 func createDB(pgConnInfo *conn.DBConnInfo) error {
