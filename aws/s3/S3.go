@@ -8,11 +8,17 @@ import (
 	"github.com/mlibrodo/db-copier/aws/config"
 	"github.com/mlibrodo/db-copier/log"
 	"os"
+	"path/filepath"
 )
 
 type S3Object struct {
 	Bucket string
 	Key    string
+}
+
+func (in *S3Object) GetFileName() string {
+	_, filename := filepath.Split(in.Key)
+	return filename
 }
 
 func Download(s3Object S3Object, file *os.File) error {

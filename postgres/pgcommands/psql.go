@@ -12,12 +12,12 @@ var (
 )
 
 type PSQLQuery struct {
-	*conn.PGConnInfo
+	*conn.DBConnInfo
 	Query string
 }
 
 func (x *PSQLQuery) Exec() common.Result {
-	execFn := common.PGCLIExecutor(PSQLCmd, x.PGConnInfo, x.ParseArgs)
+	execFn := common.PGCLIExecutor(PSQLCmd, x.DBConnInfo, x.ParseArgs)
 
 	return execFn()
 

@@ -12,16 +12,16 @@ var (
 )
 
 type PGDump struct {
-	*conn.PGConnInfo
+	*conn.DBConnInfo
 	// Verbose mode
 	Verbose bool
 	// File: output file name
 	File string
 }
 
-func NewPGDump(pgConnInfo *conn.PGConnInfo, file string) *PGDump {
+func NewPGDump(pgConnInfo *conn.DBConnInfo, file string) *PGDump {
 	return &PGDump{
-		PGConnInfo: pgConnInfo,
+		DBConnInfo: pgConnInfo,
 		File:       file,
 	}
 }
@@ -29,7 +29,7 @@ func NewPGDump(pgConnInfo *conn.PGConnInfo, file string) *PGDump {
 // Exec `pg_dump` for specified DB
 func (x *PGDump) Exec() common.Result {
 
-	execFn := common.PGCLIExecutor(PGDumpCmd, x.PGConnInfo, x.ParseArgs)
+	execFn := common.PGCLIExecutor(PGDumpCmd, x.DBConnInfo, x.ParseArgs)
 
 	return execFn()
 }

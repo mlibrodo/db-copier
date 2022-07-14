@@ -1,8 +1,10 @@
 package conn
 
-import "fmt"
+import (
+	"fmt"
+)
 
-type PGConnInfo struct {
+type DBConnInfo struct {
 	DBHost   string
 	DBPort   int32
 	DBName   string
@@ -10,7 +12,7 @@ type PGConnInfo struct {
 	Password string
 }
 
-func (x *PGConnInfo) PasswordAsEnv() *string {
+func (x *DBConnInfo) PasswordAsEnv() *string {
 	if x.Password != "" {
 		s := fmt.Sprintf(`PGPASSWORD=%v`, x.Password)
 		return &s
@@ -19,7 +21,7 @@ func (x *PGConnInfo) PasswordAsEnv() *string {
 	return nil
 }
 
-func (x *PGConnInfo) DBHostAsCmdArg() *string {
+func (x *DBConnInfo) DBHostAsCmdArg() *string {
 
 	if x.DBHost != "" {
 		s := fmt.Sprintf("--host=%v", x.DBHost)
@@ -29,7 +31,7 @@ func (x *PGConnInfo) DBHostAsCmdArg() *string {
 	return nil
 }
 
-func (x *PGConnInfo) DBPortAsCmdArg() *string {
+func (x *DBConnInfo) DBPortAsCmdArg() *string {
 
 	if x.DBPort != 0 {
 		s := fmt.Sprintf(`--port=%v`, x.DBPort)
@@ -39,7 +41,7 @@ func (x *PGConnInfo) DBPortAsCmdArg() *string {
 	return nil
 }
 
-func (x *PGConnInfo) UsernameAsCmdArg() *string {
+func (x *DBConnInfo) UsernameAsCmdArg() *string {
 
 	if x.Username != "" {
 		s := fmt.Sprintf(`--username=%v`, x.Username)
@@ -49,7 +51,7 @@ func (x *PGConnInfo) UsernameAsCmdArg() *string {
 	return nil
 }
 
-func (x *PGConnInfo) DBNameAsCmdArg(argKey *string) *string {
+func (x *DBConnInfo) DBNameAsCmdArg(argKey *string) *string {
 
 	if x.DBName != "" {
 		var s string

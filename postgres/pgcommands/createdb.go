@@ -11,16 +11,16 @@ var (
 )
 
 type CreateDB struct {
-	*conn.PGConnInfo
+	*conn.DBConnInfo
 }
 
-func NewCreateDB(pgConnInfo *conn.PGConnInfo) *CreateDB {
-	return &CreateDB{PGConnInfo: pgConnInfo}
+func NewCreateDB(pgConnInfo *conn.DBConnInfo) *CreateDB {
+	return &CreateDB{DBConnInfo: pgConnInfo}
 }
 
 // Exec `createdb` for specified DB
 func (x *CreateDB) Exec() common.Result {
-	execFn := common.PGCLIExecutor(PGCreateDBCmd, x.PGConnInfo, x.ParseArgs)
+	execFn := common.PGCLIExecutor(PGCreateDBCmd, x.DBConnInfo, x.ParseArgs)
 	return execFn()
 }
 

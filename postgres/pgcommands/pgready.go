@@ -11,13 +11,13 @@ var (
 )
 
 type IsReady struct {
-	*conn.PGConnInfo
+	*conn.DBConnInfo
 	// Seconds to wait when attempting connection. 0 disables (default: 3)
 	Timeout int
 }
 
 func (x *IsReady) Exec() common.Result {
-	execFn := common.PGCLIExecutor(PGIsReadyCmd, x.PGConnInfo, x.ParseArgs)
+	execFn := common.PGCLIExecutor(PGIsReadyCmd, x.DBConnInfo, x.ParseArgs)
 
 	return execFn()
 

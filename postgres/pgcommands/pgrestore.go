@@ -12,7 +12,7 @@ var (
 )
 
 type PGRestore struct {
-	*conn.PGConnInfo
+	*conn.DBConnInfo
 	// Verbose mode
 	Verbose bool
 	// File: Input file name
@@ -21,9 +21,9 @@ type PGRestore struct {
 	JobCount int
 }
 
-func NewPGRestore(pgConnInfo *conn.PGConnInfo, file string) *PGRestore {
+func NewPGRestore(pgConnInfo *conn.DBConnInfo, file string) *PGRestore {
 	return &PGRestore{
-		PGConnInfo: pgConnInfo,
+		DBConnInfo: pgConnInfo,
 		File:       file,
 	}
 }
@@ -31,7 +31,7 @@ func NewPGRestore(pgConnInfo *conn.PGConnInfo, file string) *PGRestore {
 // Exec `pg_restore` for specified DB
 func (x *PGRestore) Exec() common.Result {
 
-	execFn := common.PGCLIExecutor(PGRestoreCmd, x.PGConnInfo, x.ParseArgs)
+	execFn := common.PGCLIExecutor(PGRestoreCmd, x.DBConnInfo, x.ParseArgs)
 
 	return execFn()
 }

@@ -27,7 +27,7 @@ func streamExecOutput(out io.ReadCloser) string {
 	return output
 }
 
-func PGCLIExecutor(pgCommand string, pgConnInfo *conn.PGConnInfo, parseArgFn func() []string) func() Result {
+func PGCLIExecutor(pgCommand string, pgConnInfo *conn.DBConnInfo, parseArgFn func() []string) func() Result {
 
 	return func() Result {
 

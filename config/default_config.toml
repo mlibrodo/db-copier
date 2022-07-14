@@ -1,6 +1,3 @@
-
-databaseURL = "postgresql://localhost:5432/rds_provisioner"
-
 [logging]
 level = "debug"
 jsonLogs = false
@@ -12,4 +9,3 @@ accountId = "283492314377"
 
 [backup]
 s3_bucket = "librodo-db-backups"
-
