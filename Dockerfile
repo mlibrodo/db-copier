@@ -1,5 +1,5 @@
 # Build Stage
-FROM lacion/alpine-golang-buildimage:1.13 AS build-stage
+FROM lacion/alpine-golang-buildimage:1.18 AS build-stage
 
 LABEL app="build-db-copier"
 LABEL REPO="https://github.com/mlibrodo/db-copier"
@@ -14,8 +14,8 @@ WORKDIR /go/src/github.com/mlibrodo/db-copier
 
 RUN make build-alpine
 
-# Final Stage
-FROM lacion/alpine-base-image:latest
+# Add App Stage
+FROM lacion/alpine-base-image:latest as app
 
 ARG GIT_COMMIT
 ARG VERSION
