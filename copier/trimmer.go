@@ -1,7 +1,7 @@
 package copier
 
 import (
-	"github.com/doug-martin/goqu"
+	"github.com/doug-martin/goqu/v9"
 	"github.com/mlibrodo/db-copier/log"
 	"github.com/mlibrodo/db-copier/postgres/conn"
 	"github.com/mlibrodo/db-copier/postgres/pgcommands"
@@ -14,8 +14,8 @@ type TrimDef struct {
 
 func (in TrimDef) ToSQL() string {
 	ds := goqu.From(in.Table).Where(goqu.Literal(in.Filter)).Delete()
-
-	return ds.Sql
+	sql, _, _ := ds.ToSQL()
+	return sql
 }
 
 type Trim struct {

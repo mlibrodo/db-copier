@@ -75,14 +75,20 @@ var trimAndBackupCmd = &cobra.Command{
 		}
 
 		// Load from a json file
-		trimAndBackup := copier.TrimAndBackup{
+		anonymize := copier.Anonymize{
+			[]copier.AnonymizeDef{{"foobar", "x_str", copier.ANONYMIZE_STRING}},
+		}
+
+		// Load from a json file
+		trimAndAnonymize := copier.TrimAnonymizeAndBackup{
 			RestoreFromS3: restore,
 			Trim:          trim,
+			Anonymize:     anonymize,
 			TrimmedBackup: backup,
 			DropDB:        false,
 		}
 
-		trimAndBackup.Exec(connInfo)
+		trimAndAnonymize.Exec(connInfo)
 	},
 }
 

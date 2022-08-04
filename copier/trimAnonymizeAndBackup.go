@@ -4,14 +4,15 @@ import (
 	"github.com/mlibrodo/db-copier/postgres/conn"
 )
 
-type TrimAndBackup struct {
+type TrimAnonymizeAndBackup struct {
 	RestoreFromS3 RestoreFromS3
 	Trim          Trim
+	Anonymize     Anonymize
 	TrimmedBackup BackupToS3
 	DropDB        bool
 }
 
-func (in TrimAndBackup) Exec(pgConnInfo *conn.DBConnInfo) error {
+func (in TrimAnonymizeAndBackup) Exec(pgConnInfo *conn.DBConnInfo) error {
 
 	var err error
 
@@ -22,6 +23,11 @@ func (in TrimAndBackup) Exec(pgConnInfo *conn.DBConnInfo) error {
 
 	// trim the restore
 	if err = in.Trim.Exec(pgConnInfo); err != nil {
+		return err
+	}
+
+	// anonymize the restore
+	if err = in.Anonymize.Exec(pgConnInfo); err != nil {
 		return err
 	}
 
